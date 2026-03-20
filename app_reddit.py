@@ -117,13 +117,18 @@ st.set_page_config(
 
 st.title("🛒 Shopify Ad Products — Reddit Merchant Feedback")
 
+# --- Detect cloud (read-only) environment ---
+import os
+IS_CLOUD = os.environ.get("STREAMLIT_SHARING_MODE") or os.path.exists("/mount/src")
+
 # --- Sidebar ---
 with st.sidebar:
     st.header("Controls")
-    page = st.radio(
-        "Navigate",
-        ["📊 Dashboard", "🔍 Scrape", "🏷️ Classify", "📋 Browse Posts", "📈 Extracted Data"],
-    )
+    if IS_CLOUD:
+        pages = ["📊 Dashboard", "📋 Browse Posts", "📈 Extracted Data"]
+    else:
+        pages = ["📊 Dashboard", "🔍 Scrape", "🏷️ Classify", "📋 Browse Posts", "📈 Extracted Data"]
+    page = st.radio("Navigate", pages)
 
     st.divider()
 
