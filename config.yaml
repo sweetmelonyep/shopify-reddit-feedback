@@ -1,0 +1,113 @@
+# Shopify Employee Sentiment Tracker Configuration
+
+# Date ranges for scraping
+date_ranges:
+  glassdoor:
+    start: "2025-01-01"
+    end: "2026-03-10"
+  blind:
+    start: "2025-01-01"
+    end: "2026-03-10"
+  linkedin:
+    start: "2025-01-01"
+    end: "2026-03-10"
+
+# Target URLs
+urls:
+  glassdoor:
+    base: "https://www.glassdoor.com/Reviews/Shopify-Reviews-E675933.htm"
+    # Pagination pattern: append _P{page}.htm
+    page_template: "https://www.glassdoor.com/Reviews/Shopify-Reviews-E675933_P{page}.htm"
+  blind:
+    search: "https://www.teamblind.com/search/Shopify"
+  linkedin:
+    # Use Google search as proxy since direct scraping is against ToS
+    google_search_queries:
+      - 'site:linkedin.com/posts "shopify" "leaving"'
+      - 'site:linkedin.com/posts "shopify" "next chapter"'
+      - 'site:linkedin.com/posts "shopify" "moving on"'
+      - 'site:linkedin.com/posts "shopify" "grateful" "new role"'
+      - 'site:linkedin.com/posts "shopify" "departed"'
+
+# Rate limiting
+rate_limits:
+  min_delay_seconds: 2
+  max_delay_seconds: 3
+  backoff_base: 2
+  max_retries: 3
+
+# User agents for rotation
+user_agents:
+  - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+  - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15"
+  - "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
+
+# Database
+database:
+  path: "shopify_sentiment.db"
+
+# Output
+output:
+  dir: "output"
+  charts_dir: "output/charts"
+
+# Logging
+logging:
+  file: "scraper.log"
+  level: "INFO"
+
+# Scrapingdog configuration (formerly ScraperAPI)
+scraperapi:
+  api_key: "69afcea624f75ba3dfa98e1f"
+  base_url: "https://api.scrapingdog.com/scrape-premium"
+
+# Low confidence threshold
+analysis:
+  low_confidence_threshold: 5  # Flag months with fewer than N reviews
+
+# Reddit merchant feedback collection
+reddit:
+  # Create a "script" app at https://www.reddit.com/prefs/apps
+  client_id: "YOUR_REDDIT_CLIENT_ID"
+  client_secret: "YOUR_REDDIT_CLIENT_SECRET"
+  user_agent: "ShopifyAdFeedbackCollector/1.0 (by /u/YOUR_USERNAME)"
+
+  subreddits:
+    # Shopify core — highest signal
+    shopify_core:
+      - shopify
+    # E-commerce & DTC brands
+    ecommerce:
+      - ecommerce
+      - DTC_brands
+
+  keywords:
+    # Shopify native ad products (highest priority)
+    ad_products:
+      - "Shopify Audiences"
+      - "Shop Campaigns"
+      - "Shopify Collabs"
+    # Shopify + ads context
+    shopify_ads:
+      - "Shopify ads"
+      - "Shopify ad spend"
+      - "Shopify ROAS"
+      - "Shopify retargeting"
+    # Plan & performance
+    plan_performance:
+      - "Shopify Plus ads"
+      - "Shopify Audiences results"
+      - "Shopify marketing automation"
+
+  date_range:
+    start: "2022-01-01"
+    end: "2026-03-20"
+
+  # LLM extraction settings (DeepSeek V3 via OpenAI-compatible API)
+  llm:
+    provider: "deepseek"
+    api_key: "sk-c7d1051ad1a84edc8d9cfe5aa07153fb"
+    base_url: "https://api.deepseek.com"
+    model: "deepseek-chat"

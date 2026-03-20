@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+scraper.log
+debug_*.html
+output/
+.streamlit/secrets.toml
